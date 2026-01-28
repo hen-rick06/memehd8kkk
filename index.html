@@ -1,0 +1,161 @@
+index.html
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>MEMEHD8K</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: Arial, Helvetica, sans-serif;
+    }
+
+    body {
+      background: #f4f6fb;
+      color: #111;
+    }
+
+    header {
+      background: #ffffff;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+      padding: 15px 20px;
+      position: relative;
+    }
+
+    .top-bar {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+    }
+
+    .menu-btn {
+      font-size: 28px;
+      cursor: pointer;
+      user-select: none;
+    }
+
+    .logo-search {
+      flex: 1;
+      text-align: center;
+    }
+
+    .logo {
+      font-size: 28px;
+      font-weight: bold;
+      letter-spacing: 2px;
+      margin-bottom: 8px;
+    }
+
+    .search-box input {
+      width: 100%;
+      max-width: 400px;
+      padding: 10px 14px;
+      border-radius: 20px;
+      border: 1px solid #ccc;
+      outline: none;
+      font-size: 14px;
+    }
+
+    /* MENU */
+    .menu {
+      position: absolute;
+      top: 70px;
+      left: 20px;
+      background: #fff;
+      border-radius: 12px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+      width: 180px;
+      display: none;
+      flex-direction: column;
+      overflow: hidden;
+      animation: fadeIn 0.2s ease-in-out;
+    }
+
+    .menu a {
+      padding: 14px;
+      text-decoration: none;
+      color: #111;
+      transition: background 0.2s;
+    }
+
+    .menu a:hover {
+      background: #f0f0f0;
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(-10px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    main {
+      padding: 40px 20px;
+      text-align: center;
+    }
+
+    main h1 {
+      font-size: 32px;
+      margin-bottom: 10px;
+    }
+
+    main p {
+      font-size: 16px;
+      color: #555;
+    }
+  </style>
+</head>
+
+<body>
+
+<header>
+  <div class="top-bar">
+    <div class="menu-btn" onclick="toggleMenu()">➕</div>
+
+    <div class="logo-search">
+      <div class="logo">MEMEHD8K</div>
+      <div class="search-box">
+        <input type="text" placeholder="Pesquisar memes, jogos...">
+      </div>
+    </div>
+  </div>
+
+  <div class="menu" id="menu">
+    <a href="#">Sobre nós</a>
+    <a href="#">Memes</a>
+    <a href="#">Minigames</a>
+  </div>
+</header>
+
+<main>
+  <h1>Bem-vindo ao MEMEHD8K</h1>
+  <p>O lugar dos memes, diversão e minigames 🔥</p>
+</main>
+
+<script>
+  function toggleMenu() {
+    const menu = document.getElementById("menu");
+    menu.style.display = menu.style.display === "flex" ? "none" : "flex";
+  }
+
+  // Fecha o menu ao clicar fora
+  document.addEventListener("click", function(e) {
+    const menu = document.getElementById("menu");
+    const btn = document.querySelector(".menu-btn");
+
+    if (!menu.contains(e.target) && !btn.contains(e.target)) {
+      menu.style.display = "none";
+    }
+  });
+</script>
+
+</body>
+</html>
