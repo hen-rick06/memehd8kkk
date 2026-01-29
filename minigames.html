@@ -1,60 +1,78 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-<meta charset="UTF-8">
-<title>Minigames - MEMEHD8K</title>
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Minigames</title>
+  <style>
+    /* Reset simples */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: Arial, sans-serif;
+    }
 
-<style>
-body {
-  margin: 0;
-  font-family: Arial, Helvetica, sans-serif;
-  background: #f4f6fb;
-}
+    body {
+      background-color: #0f172a;
+      color: #e5e7eb;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 20px;
+      min-height: 100vh;
+    }
 
-header {
-  background: #fff;
-  padding: 20px;
-  box-shadow: 0 2px 10px rgba(0,0,0,0.08);
-  text-align: center;
-}
+    h1 {
+      margin-bottom: 20px;
+      color: #22c55e;
+    }
 
-.games {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: 20px;
-  padding: 30px;
-}
+    /* Container para os botões */
+    .game-buttons {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      width: 100%;
+      max-width: 400px;
+    }
 
-.game-card {
-  background: #fff;
-  padding: 20px;
-  border-radius: 12px;
-  text-align: center;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-  text-decoration: none;
-  color: #111;
-  transition: transform 0.2s;
-}
+    button {
+      padding: 15px;
+      font-size: 18px;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      background-color: #1e293b;
+      color: #e5e7eb;
+      transition: all 0.3s ease;
+    }
 
-.game-card:hover {
-  transform: scale(1.05);
-}
-</style>
+    button:hover {
+      background-color: #22c55e;
+      color: #0f172a;
+    }
+
+    /* Permite rolagem se a tela for pequena */
+    .scrollable {
+      width: 100%;
+      max-height: 80vh;
+      overflow-y: auto;
+      padding-right: 10px; /* espaço para scroll */
+    }
+  </style>
 </head>
-
 <body>
 
-<header>
-  <h1>🎮 Minigames</h1>
-  <a href="index.html">⬅ Voltar</a>
-</header>
+  <h1>Minigames</h1>
 
-<section class="games">
-  <a class="game-card" href="games/snake.html">
-    🐍<br><strong>Jogo da Cobrinha</strong>
-  </a>
-</section>
+  <div class="scrollable">
+    <div class="game-buttons">
+      <button onclick="alert('MemeSnake ainda não implementado!')">MemeSnake</button>
+      <button onclick="window.location.href='memeoria.html'">Jogo da MEMEória</button>
+      <button onclick="alert('Em breve!')">Em Breve</button>
+    </div>
+  </div>
 
 </body>
 </html>
