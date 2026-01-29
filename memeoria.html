@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Jogo da MEMEória</title>
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; font-family: Arial, sans-serif; }
+  body { background:#0f172a; color:#e5e7eb; display:flex; flex-direction:column; align-items:center; min-height:100vh; padding:10px; }
+  h1 { margin-bottom:20px; color:#22c55e; text-align:center; }
+  .top-bar { display:flex; justify-content:space-between; width:100%; max-width:800px; margin-bottom:20px; }
+  .score, .record { font-size:18px; padding:5px 10px; background:#1e293b; border-radius:10px; }
+  .game-area { display:flex; flex-direction:column; align-items:center; width:100%; max-width:800px; }
+  .difficulty-selection { display:flex; gap:10px; margin-bottom:20px; }
+  button { padding:10px 20px; border:none; border-radius:10px; cursor:pointer; font-size:16px; background:#1e293b; color:#e5e7eb; transition:all 0.3s; }
+  button:hover { background:#22c55e; color:#0f172a; }
+  .card-grid { display:grid; gap:10px; justify-content:center; margin-bottom:20px; }
+  .card { width:60px; height:60px; background:#1e293b; display:flex; justify-content:center; align-items:center; font-size:24px; border-radius:10px; cursor:pointer; color:#0f172a; }
+  .card.flipped, .card.matched { background:#22c55e; color:#0f172a; cursor:default; }
+  .end-menu { display:none; flex-direction:column; align-items:center; gap:10px; margin-top:20px; }
+  .lobby { display:flex; flex-direction:column; align-items:center; gap:20px; }
+  .exit-button { position:fixed; bottom:20px; left:20px; }
+</style>
+</head>
+<body>
+
+<h1>Jogo da MEMEória</h1>
+
+<div class="top-bar">
+  <div class="score">Pontuação: <span id="score">0</span></div>
+  <div class="record">Recorde: <span id="record">0</span></div>
+</div>
+
+<div class="game-area">
+
+  <!-- Lobby -->
+  <div class="lobby" id="lobby">
+    <div class="difficulty-selection">
+      <button onclick="setDifficulty('facil')">Fácil</button>
+      <button onclick="setDifficulty('medio')">Médio</button>
+      <button onclick="setDifficulty('dificil')">Difícil</button>
+    </div>
+    <button onclick="startGame()">Iniciar</button>
+  </div>
+
+  <!-- Grid do Jogo -->
+  <div class="card-grid" id="cardGrid"></div>
+
+  <!-- Menu Final -->
+  <div class="end-menu" id="endMenu">
+    <h2>Fim de Jogo!</h2>
+    <button onclick="restartGame()">Recomeçar</button>
+    <button onclick="backToLobby()">Trocar Dificuldade</button>
+    <button onclick="exitGame()">Voltar ao Lobby</button>
+  </div>
+
+</div>
+
+<!-- Botão de sair -->
+<button class="exit-button" onclick="exitGame()">Sair</button>
+
+<script>
+let difficulty = 'facil';
+let pairsCount = 8;
+let cards = [];
+let firstCard = null;
+let secondCard = null;
+let canFlip = true;
+let score = 0;
+let consecutiveHits = 0;
+let consecutiveFails = 0;
+let maxScore = 1000;
+
+// Recupera recorde do localStorage
+let record = localStorage.getItem('memeoriaRecord') || 0;
+document.getElementById('record').innerText = record;
+
+function setDifficulty(level) {
+  difficulty = level;
+  if(level==='facil') pairsCount=8;
+  if(level==='medio') pairsCount=12;
+  if(level==='dificil') pairsCount=16;
+}
+
+function startGame() {
+  document.getElementById('lobby').style.display='none';
+  document.getElementById('endMenu').style.display='none';
+  score=0;
+  consecutiveHits=0;
+  consecutiveFails=0;
+  updateScore();
+  createCards();
+}
+
+function createCards() {
+  cards = [];
+  const grid = document.getElementById('cardGrid');
+  grid.innerHTML='';
+  const totalCards = pairsCount*2;
+
+  // Criar array de pares
+  for(let i=1;i<=pairsCount;i++){
+    cards.push(i);
+    cards.push(i);
+  }
+
+  // Embaralhar
+  cards.sort(()=>Math.random()-0.5);
+
+  // Definir grid columns baseado na quantidade
+  let columns = Math.ceil(Math.sqrt(totalCards));
+  grid.style.gridTemplateColumns=`repeat(${columns}, 60px)`;
+
+  // Criar divs
+  for(let i=0;i<totalCards;i++){
+    const card = document.createElement('div');
+    card.classList.add('card');
+    card.dataset.value = cards[i];
+    card.innerText = '?';
+    card.addEventListener('click', ()=>flipCard(card));
+    grid.appendChild(card);
+  }
+}
+
+function flipCard(card){
+  if(!canFlip || card.classList.contains('flipped') || card.classList.contains('matched')) return;
+
+  card.classList.add('flipped');
+  card.innerText = card.dataset.value;
+
+  if(!firstCard){
+    firstCard = card;
+  } else {
+    secondCard = card;
+    canFlip=false;
+
+    if(firstCard.dataset.value === secondCard.dataset.value){
+      // Acerto
+      consecutiveHits++;
+      consecutiveFails=0;
+      let points = 5 * Math.pow(2, consecutiveHits-1);
+      addScore(points);
+      firstCard.classList.add('matched');
+      secondCard.classList.add('matched');
+      resetFlip();
+      checkGameEnd();
+    } else {
+      // Erro
+      consecutiveHits=0;
+      consecutiveFails++;
+      if(consecutiveFails>=3) addScore(-5);
+      setTimeout(()=>{
+        firstCard.classList.remove('flipped');
+        firstCard.innerText='?';
+        secondCard.classList.remove('flipped');
+        secondCard.innerText='?';
+        resetFlip();
+      }, 1000);
+    }
+  }
+}
+
+function resetFlip(){
+  firstCard=null;
+  secondCard=null;
+  canFlip=true;
+}
+
+function addScore(points){
+  score+=points;
+  if(score<0) score=0;
+  if(score>maxScore) score=maxScore;
+  updateScore();
+}
+
+function updateScore(){
+  document.getElementById('score').innerText = score;
+  if(score>record){
+    record = score;
+    document.getElementById('record').innerText=record;
+    localStorage.setItem('memeoriaRecord', record);
+  }
+}
+
+function checkGameEnd(){
+  const unmatched = document.querySelectorAll('.card:not(.matched)');
+  if(unmatched.length===0){
+    document.getElementById('endMenu').style.display='flex';
+  }
+}
+
+// Menu final
+function restartGame(){
+  startGame();
+}
+
+function backToLobby(){
+  document.getElementById('lobby').style.display='flex';
+  document.getElementById('cardGrid').innerHTML='';
+  document.getElementById('endMenu').style.display='none';
+}
+
+// Sair para minigames
+function exitGame(){
+  window.location.href='minigames.html';
+}
+
+</script>
+</body>
+</html>
