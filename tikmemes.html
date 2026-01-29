@@ -14,83 +14,18 @@
 }
 
 body {
-  background: #000;
+  background: #0f172a;
   color: #fff;
-  overflow: hidden;
 }
 
 /* Feed */
 #feed {
-  height: 100vh;
-  overflow-y: scroll;
-  scroll-snap-type: y mandatory;
+  max-width: 500px;
+  margin: auto;
+  padding: 20px;
 }
 
 /* Post */
-.post {
-  height: 100vh;
-  position: relative;
-  scroll-snap-align: start;
-}
-
-.post video,
-.post img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-
-/* Info do post */
-.post-info {
-  position: absolute;
-  bottom: 140px;
-  left: 15px;
-  max-width: 80%;
-  text-shadow: 2px 2px 6px #000;
-}
-
-/* Área de comentários */
-.comments {
-  position: absolute;
-  bottom: 0;
-  width: 100%;
-  background: rgba(0,0,0,0.7);
-  padding: 10px;
-}
-
-.comments-list {
-  max-height: 80px;
-  overflow-y: auto;
-  font-size: 14px;
-}
-
-.comment {
-  margin-bottom: 5px;
-}
-
-/* Campo de comentar */
-.comment-form {
-  display: flex;
-  gap: 5px;
-  margin-top: 5px;
-}
-
-.comment-form input {
-  flex: 1;
-  padding: 6px;
-  border-radius: 5px;
-  border: none;
-}
-
-.comment-form button {
-  padding: 6px 10px;
-  border: none;
-  background: #ff0050;
-  color: #fff;
-  border-radius: 5px;
-  cursor: pointer;
-}
-
 .post {
   background: #111827;
   border-radius: 14px;
@@ -99,6 +34,7 @@ body {
   box-shadow: 0 0 10px rgba(0,0,0,0.4);
 }
 
+/* Cabeçalho */
 .post-header {
   padding: 10px;
   display: flex;
@@ -106,18 +42,21 @@ body {
   font-size: 14px;
 }
 
+/* Legenda */
 .post-caption {
   padding: 10px;
   font-size: 16px;
 }
 
+/* Mídia */
 .post-media {
   width: 100%;
-  height: auto;
-  object-fit: contain;
+  max-height: 70vh;
+  display: block;
   background: black;
 }
 
+/* Ações */
 .post-actions {
   display: flex;
   justify-content: space-around;
@@ -136,139 +75,52 @@ body {
 .post-actions button:hover {
   color: #22c55e;
 }
-  
 </style>
 </head>
 
+<body>
+
+<div id="feed">
+
+  <!-- POST FIXO DE TESTE -->
   <div class="post">
 
-  <div class="post-header">
-    <strong>@TikMemes</strong>
-    <span>agora</span>
-  </div>
-
-  <div class="post-caption">
-    Meme "Não Sei" 🤣
-    Veja:
-  </div>
-
-<video
-  src="media/bebado nÃo sei(360P).mp4"
-  class="post-media"
-  autoplay
-  muted
-  loop
-  playsinline
-></video>
-
-  <div class="post-actions">
-    <button>👍 Curtir</button>
-    <button>💬 Comentar</button>
-    <button>🔁 Compartilhar</button>
-  </div>
-
-  </div>
-
-<div id="feed"></div>
-
-<!-- Firebase -->
-<script type="module">
-/* 🔥 IMPORTANTE 🔥
-   Substitua pelas SUAS credenciais do Firebase
-*/
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-import {
-  getFirestore,
-  collection,
-  getDocs,
-  addDoc,
-  query,
-  orderBy,
-  serverTimestamp
-} from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
-
-const firebaseConfig = {
-  apiKey: "SUA_API_KEY",
-  authDomain: "SEU_DOMINIO.firebaseapp.com",
-  projectId: "SEU_PROJECT_ID",
-  storageBucket: "SEU_BUCKET.appspot.com",
-  messagingSenderId: "SEU_ID",
-  appId: "SEU_APP_ID"
-};
-
-const app = initializeApp(firebaseConfig);
-const db = getFirestore(app);
-
-const feed = document.getElementById("feed");
-
-/* 🔽 Carregar posts */
-async function carregarPosts() {
-  const q = query(collection(db, "posts"), orderBy("createdAt", "desc"));
-  const snapshot = await getDocs(q);
-
-  snapshot.forEach(doc => {
-    const post = doc.data();
-    criarPost(doc.id, post);
-  });
-}
-
-function criarPost(postId, post) {
-  const div = document.createElement("div");
-  div.className = "post";
-
-  const media =
-    post.type === "video"
-      ? `<video src="${post.src}" autoplay muted loop></video>`
-      : `<img src="${post.src}">`;
-
-  div.innerHTML = `
-    ${media}
-    <div class="post-info">${post.desc}</div>
-
-    <div class="comments">
-      <div class="comments-list" id="comments-${postId}"></div>
-      <div class="comment-form">
-        <input placeholder="Comentar..." id="input-${postId}">
-        <button onclick="comentar('${postId}')">Enviar</button>
-      </div>
+    <div class="post-header">
+      <strong>@TikMemes</strong>
+      <span>agora</span>
     </div>
-  `;
 
-  feed.appendChild(div);
-  carregarComentarios(postId);
-}
+    <div class="post-caption">
+      Meme "Não Sei" 🤣<br>
+      Veja:
+    </div>
 
-/* 🔽 Comentários */
-async function carregarComentarios(postId) {
-  const commentsRef = collection(db, "posts", postId, "comments");
-  const snapshot = await getDocs(commentsRef);
+    <video
+      src="media/bebado nÃo sei(360P).mp4"
+      class="post-media"
+      autoplay
+      muted
+      loop
+      playsinline>
+    </video>
 
-  const list = document.getElementById(`comments-${postId}`);
-  list.innerHTML = "";
+    <div class="post-actions">
+      <button>👍 Curtir</button>
+      <button>💬 Comentar</button>
+      <button>🔁 Compartilhar</button>
+    </div>
 
-  snapshot.forEach(doc => {
-    const c = doc.data();
-    const div = document.createElement("div");
-    div.className = "comment";
-    div.textContent = c.text;
-    list.appendChild(div);
+  </div>
+
+</div>
+
+<!-- JS para ativar som ao clicar -->
+<script>
+document.querySelectorAll("video").forEach(video => {
+  video.addEventListener("click", () => {
+    video.muted = !video.muted;
   });
-}
-
-window.comentar = async function(postId) {
-  const input = document.getElementById(`input-${postId}`);
-  if (!input.value.trim()) return;
-
-  await addDoc(collection(db, "posts", postId, "comments"), {
-    text: input.value,
-    createdAt: serverTimestamp()
-  });
-
-  input.value = "";
-  carregarComentarios(postId);
-};
-
-carregarPosts();
+});
 </script>
 
 </body>
