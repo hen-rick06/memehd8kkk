@@ -1,142 +1,60 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8">
-  <title>Minigames - MEMEHD8K</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="UTF-8">
+<title>Minigames - MEMEHD8K</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <style>
-    body {
-      font-family: Arial, Helvetica, sans-serif;
-      background: #f4f6fb;
-      text-align: center;
-      margin: 0;
-      padding: 20px;
-    }
+<style>
+body {
+  margin: 0;
+  font-family: Arial, Helvetica, sans-serif;
+  background: #f4f6fb;
+}
 
-    h1 {
-      margin-bottom: 10px;
-    }
+header {
+  background: #fff;
+  padding: 20px;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+  text-align: center;
+}
 
-    .back {
-      display: inline-block;
-      margin-bottom: 20px;
-      text-decoration: none;
-      color: #2563eb;
-    }
+.games {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 20px;
+  padding: 30px;
+}
 
-    .game {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 10px;
-      max-width: 420px;
-      margin: 0 auto;
-    }
+.game-card {
+  background: #fff;
+  padding: 20px;
+  border-radius: 12px;
+  text-align: center;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  text-decoration: none;
+  color: #111;
+  transition: transform 0.2s;
+}
 
-    .card {
-      background: #2563eb;
-      aspect-ratio: 1;
-      border-radius: 12px;
-      cursor: pointer;
-      position: relative;
-      transform-style: preserve-3d;
-      transition: transform 0.4s;
-    }
-
-    .card.flip {
-      transform: rotateY(180deg);
-    }
-
-    .face {
-      position: absolute;
-      inset: 0;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 40px;
-      backface-visibility: hidden;
-      border-radius: 12px;
-    }
-
-    .front {
-      background: #2563eb;
-      color: #fff;
-    }
-
-    .back-face {
-      background: #fff;
-      transform: rotateY(180deg);
-    }
-  </style>
+.game-card:hover {
+  transform: scale(1.05);
+}
+</style>
 </head>
 
 <body>
 
-<h1>🎮 Minigames</h1>
-<a class="back" href="index.html">⬅ Voltar ao início</a>
+<header>
+  <h1>🎮 Minigames</h1>
+  <a href="index.html">⬅ Voltar</a>
+</header>
 
-<h2>Jogo da Memória</h2>
-
-<div class="game" id="game"></div>
-
-<script>
-  const memes = [
-    "😂","😂",
-    "😎","😎",
-    "🤡","🤡",
-    "🔥","🔥",
-    "🐶","🐶",
-    "👀","👀",
-    "💀","💀",
-    "🤣","🤣"
-  ];
-
-  memes.sort(() => Math.random() - 0.5);
-
-  const game = document.getElementById("game");
-  let first = null;
-  let lock = false;
-
-  memes.forEach(meme => {
-    const card = document.createElement("div");
-    card.className = "card";
-
-    card.innerHTML = `
-      <div class="face front">?</div>
-      <div class="face back-face">${meme}</div>
-    `;
-
-    card.onclick = () => {
-      if (lock || card === first || card.classList.contains("flip")) return;
-
-      card.classList.add("flip");
-
-      if (!first) {
-        first = card;
-      } else {
-        const second = card;
-        lock = true;
-
-        const a = first.querySelector(".back-face").textContent;
-        const b = second.querySelector(".back-face").textContent;
-
-        if (a === b) {
-          first = null;
-          lock = false;
-        } else {
-          setTimeout(() => {
-            first.classList.remove("flip");
-            second.classList.remove("flip");
-            first = null;
-            lock = false;
-          }, 800);
-        }
-      }
-    };
-
-    game.appendChild(card);
-  });
-</script>
+<section class="games">
+  <a class="game-card" href="games/snake.html">
+    🐍<br><strong>Jogo da Cobrinha</strong>
+  </a>
+</section>
 
 </body>
 </html>
