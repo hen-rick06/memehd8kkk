@@ -255,39 +255,60 @@ function createCards(){
   const grid = document.getElementById("cardGrid");
   grid.innerHTML = "";
 
+  // ==== CONFIGURAÇÃO POR DIFICULDADE ====
+  let desiredCols = 4;
+  let cardW = 90;
+  let cardH = 130;
+
+  if (difficulty === "medio") {
+    desiredCols = 5;
+    cardW = 85;
+    cardH = 125;
+  }
+
+  if (difficulty === "dificil") {
+    desiredCols = 6;
+    cardW = 75;
+    cardH = 110;
+  }
+
+  // ==== CRIA OS PARES ====
   let values = [];
-  for(let i=0;i<pairsCount;i++){
+  for (let i = 0; i < pairsCount; i++) {
     values.push(i);
     values.push(i);
   }
-  values.sort(()=>Math.random()-0.5);
 
-  const availableWidth = window.innerWidth - 40; // margem de segurança
-const maxCols = Math.floor(availableWidth / (cardSize.w + 12));
-const cols = Math.min(
-  Math.ceil(Math.sqrt(values.length)),
-  maxCols
-);
+  // ==== EMBARALHA ====
+  values.sort(() => Math.random() - 0.5);
 
-grid.style.gridTemplateColumns = `repeat(${cols}, ${cardSize.w}px)`;
-  values.forEach((value, index)=>{
+  // ==== CÁLCULO SEGURO DE COLUNAS (SEM CORTAR) ====
+  const gap = 14;
+  const availableWidth = window.innerWidth - 32;
+  const maxColsThatFit = Math.floor(availableWidth / (cardW + gap));
+
+  const cols = Math.min(desiredCols, maxColsThatFit);
+
+  grid.style.gridTemplateColumns = `repeat(${cols}, ${cardW}px)`;
+
+  // ==== CRIA AS CARTAS ====
+  values.forEach(value => {
     const card = document.createElement("div");
     card.className = "card";
     card.dataset.value = value;
-    card.style.width = cardSize.w + "px";
-    card.style.height = cardSize.h + "px";
-    card.style.animationDelay = `${index * 35}ms`;
+    card.style.width = cardW + "px";
+    card.style.height = cardH + "px";
 
     card.innerHTML = `
       <div class="card-inner">
         <div class="card-front">MEMEHD8K</div>
         <div class="card-back">
-          <img src="${memeImages[value]}">
+          <img src="${memeImages[value]}" alt="meme">
         </div>
       </div>
     `;
 
-    card.onclick = ()=>flipCard(card);
+    card.onclick = () => flipCard(card);
     grid.appendChild(card);
   });
 }
