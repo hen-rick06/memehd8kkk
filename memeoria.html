@@ -31,8 +31,8 @@ h1 {
 .top-bar {
   display:flex;
   justify-content:space-between;
-  width:90%;
-  max-width:500px;
+  width:95%;
+  max-width:520px;
   margin-bottom:15px;
 }
 
@@ -46,20 +46,22 @@ h1 {
   display:flex;
   flex-direction:column;
   align-items:center;
+  width:100%;
 }
 
 .card-grid {
   display:grid;
-  gap:14px;
+  gap:12px;
   justify-content:center;
   align-items:center;
   perspective:1000px;
+  width:100%;
+  max-width:600px;
+  padding:10px;
 }
 
 /* ===== CARTA ===== */
 .card {
-  width:90px;
-  height:130px;
   cursor:pointer;
   opacity:0;
   transform:scale(0.6) rotateY(180deg);
@@ -101,15 +103,13 @@ h1 {
   border:3px solid #d4af37;
 }
 
-/* Frente */
 .card-front {
   background:linear-gradient(145deg, #1e293b, #0f172a);
   color:#d4af37;
-  font-size:13px;
+  font-size:12px;
   letter-spacing:1px;
 }
 
-/* Verso */
 .card-back {
   transform: rotateY(180deg);
   background:#22c55e;
@@ -151,6 +151,16 @@ button:hover {
   gap:10px;
   margin-top:15px;
 }
+
+/* 📱 Ajustes Mobile */
+@media (max-width: 480px){
+  .card-grid {
+    gap:10px;
+  }
+  h1 {
+    font-size:20px;
+  }
+}
 </style>
 </head>
 
@@ -184,6 +194,8 @@ button:hover {
 <script>
 let difficulty = 'facil';
 let pairsCount = 8;
+let cardSize = { w: 90, h: 130 };
+
 let firstCard = null;
 let secondCard = null;
 let canFlip = true;
@@ -210,18 +222,30 @@ document.getElementById("record").innerText = record;
 
 function setDifficulty(level){
   difficulty = level;
-  if(level==="facil") pairsCount = 8;
-  if(level==="medio") pairsCount = 12;
-  if(level==="dificil") pairsCount = 16;
+
+  if(level==="facil"){
+    pairsCount = 8;
+    cardSize = { w: 100, h: 140 };
+  }
+  if(level==="medio"){
+    pairsCount = 12;
+    cardSize = { w: 85, h: 120 };
+  }
+  if(level==="dificil"){
+    pairsCount = 16;
+    cardSize = { w: 70, h: 100 };
+  }
 }
 
 function startGame(){
   document.getElementById("lobby").style.display="none";
   document.getElementById("endMenu").style.display="none";
+
   score = 0;
   comboPoints = 5;
   consecutiveHits = 0;
   consecutiveFails = 0;
+
   updateScore();
   createCards();
 }
@@ -237,15 +261,16 @@ function createCards(){
   }
   values.sort(()=>Math.random()-0.5);
 
-  /* 🔧 CORREÇÃO DEFINITIVA DAS COLUNAS */
   let cols = Math.ceil(Math.sqrt(values.length));
-  grid.style.gridTemplateColumns = `repeat(${cols}, 90px)`;
+  grid.style.gridTemplateColumns = `repeat(${cols}, ${cardSize.w}px)`;
 
   values.forEach((value, index)=>{
     const card = document.createElement("div");
     card.className = "card";
     card.dataset.value = value;
-    card.style.animationDelay = `${index * 40}ms`;
+    card.style.width = cardSize.w + "px";
+    card.style.height = cardSize.h + "px";
+    card.style.animationDelay = `${index * 35}ms`;
 
     card.innerHTML = `
       <div class="card-inner">
@@ -255,6 +280,7 @@ function createCards(){
         </div>
       </div>
     `;
+
     card.onclick = ()=>flipCard(card);
     grid.appendChild(card);
   });
@@ -292,11 +318,8 @@ function flipCard(card){
         if(score < 0) score = 0;
       }
 
-      setTimeout(()=>{
-        resetTurn(false);
-      },900);
+      setTimeout(()=>resetTurn(false), 900);
     }
-
     updateScore();
   }
 }
