@@ -20,30 +20,29 @@ body {
 
 /* Feed */
 #feed {
-  max-width: 500px;
+  max-width: 520px;
   margin: auto;
-  padding: 20px;
+  padding: 16px;
 }
 
-/* Post */
+/* Post externo */
 .post {
   background: #111827;
   border-radius: 14px;
-  margin-bottom: 30px;
-  overflow: hidden;
+  margin-bottom: 28px;
   box-shadow: 0 0 10px rgba(0,0,0,0.4);
 }
 
 /* Cabeçalho */
 .post-header {
-  padding: 10px 12px;
+  padding: 12px 14px;
   display: flex;
   justify-content: space-between;
   font-size: 14px;
   color: #cbd5f5;
 }
 
-/* MOLDURA PADRÃO (estilo Facebook) */
+/* ===== MOLDURA PADRÃO (REUTILIZÁVEL) ===== */
 .post-frame {
   background: #0b1220;
   border: 1px solid #1f2937;
@@ -52,10 +51,17 @@ body {
   overflow: hidden;
 }
 
-/* Título / legenda */
+/* Conteúdo variável do post */
+.post-content {
+  display: flex;
+  flex-direction: column;
+}
+
+/* Legenda */
 .post-caption {
-  padding: 12px;
+  padding: 14px;
   font-size: 16px;
+  line-height: 1.4;
   border-bottom: 1px solid #1f2937;
 }
 
@@ -63,7 +69,7 @@ body {
 .post-media {
   width: 100%;
   max-height: 70vh;
-  display: block;
+  object-fit: cover;
   background: black;
 }
 
@@ -71,7 +77,7 @@ body {
 .post-actions {
   display: flex;
   justify-content: space-around;
-  padding: 10px;
+  padding: 10px 0;
   border-top: 1px solid #1f2937;
 }
 
@@ -87,20 +93,31 @@ body {
   font-size: 14px;
 }
 
-/* Ícone de curtir */
+/* ===== CURTIDA CORRETA ===== */
 .like-icon {
   width: 22px;
   height: 22px;
-  stroke: white;
-  fill: none;
-  stroke-width: 2;
-  transition: fill 0.2s;
 }
 
-/* Curtido */
-button.liked .like-icon {
-  fill: #22c55e;
+.heart-fill {
+  fill: none;
+}
+
+.heart-stroke {
+  fill: none;
   stroke: white;
+  stroke-width: 2;
+}
+
+.like-btn.liked .heart-fill {
+  fill: #22c55e;
+}
+
+/* Responsivo */
+@media (max-width: 600px) {
+  #feed {
+    padding: 10px;
+  }
 }
 </style>
 </head>
@@ -109,7 +126,7 @@ button.liked .like-icon {
 
 <div id="feed">
 
-  <!-- POST FIXO DE TESTE -->
+  <!-- POST -->
   <div class="post">
 
     <div class="post-header">
@@ -117,37 +134,45 @@ button.liked .like-icon {
       <span>agora</span>
     </div>
 
-    <!-- MOLDURA DO POST -->
+    <!-- MOLDURA PADRÃO -->
     <div class="post-frame">
 
-      <div class="post-caption">
-        Meme "Não Sei" 🤣<br>
-        Veja:
+      <!-- CONTEÚDO VARIÁVEL -->
+      <div class="post-content">
+
+        <div class="post-caption">
+          Meme "Não Sei" 🤣<br>
+          Veja:
+        </div>
+
+        <video
+          class="post-media"
+          src="media/bebado nÃo sei(360P).mp4"
+          autoplay
+          muted
+          loop
+          playsinline>
+        </video>
+
+        <div class="post-actions">
+
+          <button class="like-btn">
+            <svg class="like-icon" viewBox="0 0 24 24">
+              <path class="heart-fill"
+                d="M20.8 4.6c-1.8-1.7-4.6-1.7-6.4 0L12 7l-2.4-2.4c-1.8-1.7-4.6-1.7-6.4 0-2 1.9-2 5 0 6.9L12 21l8.8-9.5c2-1.9 2-5 0-6.9z"/>
+              <path class="heart-stroke"
+                d="M20.8 4.6c-1.8-1.7-4.6-1.7-6.4 0L12 7l-2.4-2.4c-1.8-1.7-4.6-1.7-6.4 0-2 1.9-2 5 0 6.9L12 21l8.8-9.5c2-1.9 2-5 0-6.9z"/>
+            </svg>
+            Curtir
+          </button>
+
+          <button class="comment-btn">Comentários</button>
+          <button class="share-btn">Compartilhar</button>
+
+        </div>
+
       </div>
-
-      <video
-        src="media/bebado nÃo sei(360P).mp4"
-        class="post-media"
-        autoplay
-        muted
-        loop
-        playsinline>
-      </video>
-
-      <div class="post-actions">
-
-        <!-- CURTIR -->
-        <button class="like-btn">
-          <svg class="like-icon" viewBox="0 0 24 24">
-            <path d="M20.8 4.6c-1.8-1.7-4.6-1.7-6.4 0L12 7l-2.4-2.4c-1.8-1.7-4.6-1.7-6.4 0-2 1.9-2 5 0 6.9L12 21l8.8-9.5c2-1.9 2-5 0-6.9z"/>
-          </svg>
-          Curtir
-        </button>
-
-        <button>Comentários</button>
-        <button>Compartilhar</button>
-
-      </div>
+      <!-- FIM DO CONTEÚDO -->
 
     </div>
     <!-- FIM DA MOLDURA -->
@@ -157,18 +182,16 @@ button.liked .like-icon {
 </div>
 
 <script>
-/* Curtir */
-document.querySelectorAll(".like-btn").forEach(btn => {
-  btn.addEventListener("click", () => {
-    btn.classList.toggle("liked");
-  });
+/* Curtir (funciona para qualquer post novo) */
+document.addEventListener("click", e => {
+  const btn = e.target.closest(".like-btn");
+  if (btn) btn.classList.toggle("liked");
 });
 
-/* Vídeo: ligar/desligar som */
-document.querySelectorAll("video").forEach(video => {
-  video.addEventListener("click", () => {
-    video.muted = !video.muted;
-  });
+/* Vídeo: som on/off */
+document.addEventListener("click", e => {
+  const video = e.target.closest("video");
+  if (video) video.muted = !video.muted;
 });
 </script>
 
